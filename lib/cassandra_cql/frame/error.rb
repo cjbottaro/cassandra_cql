@@ -15,8 +15,13 @@ module CassandraCql
         @message = buffer.read_cql_string
       end
 
+      # TODO implement this
       def downcast
+        self
+      end
 
+      def to_exception
+        CassandraCql::Error::MAP[code].new(code, message)
       end
 
     end

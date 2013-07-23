@@ -278,6 +278,14 @@ module CassandraCql
 
     end
 
+    context "errors" do
+
+      it "are raised as exceptions" do
+        expect{ client.query("this is not cql") }.to raise_error(Error::Syntax)
+      end
+
+    end
+
   end
 
 end

@@ -62,16 +62,17 @@ module CassandraCql
       Notifications.instrument("#{klass::EVENT_NAME}.cassandra_cql") do |payload|
 
         # Handle the request phase
-        request = klass.new(*args)
+        @last_request = request = klass.new(*args)
         request.set_notification_payload(payload)
         request.compression = options[:compression]
         socket.sendmsg(request.bytes)
-        @last_request  = request
 
         # Handle the response phase
-        response = Frame.recv(socket)
-        raise(Helper.frame_error_to_execption(response)) if response.error?
-        @last_response = response
+        @last_response = response = Frame.recv(socket)
+        raise(response.to_exception) if response.error?
+
+        # Return response
+        response
       end
     end
 

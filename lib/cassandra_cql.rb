@@ -1,4 +1,6 @@
 require "cassandra_cql/version"
+
+require "cassandra_cql/constants"
 require "cassandra_cql/caster"
 require "cassandra_cql/helper"
 require "cassandra_cql/request"
@@ -7,80 +9,3 @@ require "cassandra_cql/frame"
 
 require "cassandra_cql/errors"
 require "cassandra_cql/client"
-
-module CassandraCql
-
-  HEADER_FLAG_COMPRESSION = 0x01
-  HEADER_FLAG_TRACING     = 0x02
-
-  OPCODE_ERROR          = 0x00
-  OPCODE_STARTUP        = 0x01
-  OPCODE_READY          = 0x02
-  OPCODE_AUTHENTICATE   = 0x03
-  OPCODE_CREDENTIALS    = 0x04
-  OPCODE_OPTIONS        = 0x05
-  OPCODE_SUPPORTED      = 0x06
-  OPCODE_QUERY          = 0x07
-  OPCODE_RESULT         = 0x08
-  OPCODE_PREPARE        = 0x09
-  OPCODE_EXECUTE        = 0x0A
-  OPCODE_REGISTER       = 0x0B
-  OPCODE_EVENT          = 0x0C
-
-  CONSISTENCY_ANY           = 0x0000
-  CONSISTENCY_ONE           = 0x0001
-  CONSISTENCY_TWO           = 0x0002
-  CONSISTENCY_THREE         = 0x0003
-  CONSISTENCY_QUORUM        = 0x0004
-  CONSISTENCY_ALL           = 0x0005
-  CONSISTENCY_LOCAL_QUORUM  = 0x0006
-  CONSISTENCY_EACH_QUORUM   = 0x0007
-
-  KIND_VOID           = 0x0001
-  KIND_ROWS           = 0x0002
-  KIND_SET_KEYSPACE   = 0x0003
-  KIND_PREPARED       = 0x0004
-  KIND_SCHEMA_CHANGE  = 0x0005
-
-  COLUMN_TYPE_CUSTOM      = 0x0000
-  COLUMN_TYPE_ASCII       = 0x0001
-  COLUMN_TYPE_BIGINT      = 0x0002
-  COLUMN_TYPE_BLOB        = 0x0003
-  COLUMN_TYPE_BOOLEAN     = 0x0004
-  COLUMN_TYPE_COUNTER     = 0x0005
-  COLUMN_TYPE_DECIMAL     = 0x0006
-  COLUMN_TYPE_DOUBLE      = 0x0007
-  COLUMN_TYPE_FLOAT       = 0x0008
-  COLUMN_TYPE_INT         = 0x0009
-  COLUMN_TYPE_TEXT        = 0x000A
-  COLUMN_TYPE_TIMESTAMP   = 0x000B
-  COLUMN_TYPE_UUID        = 0x000C
-  COLUMN_TYPE_VARCHAR     = 0x000D
-  COLUMN_TYPE_VARINT      = 0x000E
-  COLUMN_TYPE_TIMEUUID    = 0x000F
-  COLUMN_TYPE_INET        = 0x0010
-  COLUMN_TYPE_LIST        = 0x0020
-  COLUMN_TYPE_MAP         = 0x0021
-  COLUMN_TYPE_SET         = 0x0022
-
-  ROWS_MASK_GLOBAL_TABLE_SPEC = 0x0001
-
-  ERROR_SERVER            = 0x0000
-  ERROR_PROTOCOL          = 0x000A
-  ERROR_BAD_CREDENTIALS   = 0x0100
-  ERROR_UNAVAILABLE       = 0x1000
-  ERROR_OVERLOADED        = 0x1001
-  ERROR_IS_BOOTSTRAPPING  = 0x1002
-  ERROR_TRUNCATE          = 0x1003
-  ERROR_WRITE_TIMEOUT     = 0x1100
-  ERROR_READ_TIMEOUT      = 0x1200
-  ERROR_SYNTAX            = 0x2000
-  ERROR_UNAUTHORIZED      = 0x2100
-  ERROR_INVALID           = 0x2200
-  ERROR_CONFIG            = 0x2300
-  ERROR_ALREADY_EXISTS    = 0x2400
-  ERROR_UNPREPARED        = 0x2500
-
-  COMPRESSION_SNAPPY      = "snappy"
-
-end

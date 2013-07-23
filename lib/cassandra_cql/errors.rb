@@ -1,26 +1,6 @@
 module CassandraCql
   module Error
 
-    def self.build(code, message)
-      error_code_map[code].new(code, message)
-    end
-
-    def self.error_code_map
-      @error_code_map ||= begin
-        CassandraCql.constants.inject({}) do |memo, name|
-          name = name.to_s
-          if name.index("ERROR_") == 0
-            _code = CassandraCql.const_get(name) # Don't shadow enclosing scope's code
-            parts = name.split("_")
-            parts.shift
-            class_name = parts.collect{ |part| part.capitalize }.join("")
-            memo[_code] = const_get(class_name)
-          end
-          memo
-        end
-      end
-    end
-
     class Base < RuntimeError
 
       attr_reader :code
@@ -47,6 +27,22 @@ module CassandraCql
     class Config < Base; end
     class AlreadyExists < Base; end
     class Unprepared < Base; end
+
+
+    MAP = begin
+      CassandraCql.constants.inject({}) do |memo, name|
+        name = name.to_s
+        if name.index("ERROR_") == 0
+          _code = CassandraCql.const_get(name) # Don't shadow enclosing scope's code
+          parts = name.split("_")
+          parts.shift
+          class_name = parts.collect{ |part| part.capitalize }.join("")
+          memo[_code] = const_get(class_name)
+        end
+        memo
+      end
+    end
+
 
   end
 end

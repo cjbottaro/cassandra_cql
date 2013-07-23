@@ -4,6 +4,7 @@ module CassandraCql
     def self.included(mod)
       mod.extend(ClassMethods)
       mod.class_eval do
+        const_set(:OPCODE, CassandraCql.const_get("OPCODE_%s" % name.split("::").last.upcase))
         const_set(:EVENT_NAME, name.split("::").last.downcase)
         attr_accessor :compression
       end
@@ -16,7 +17,7 @@ module CassandraCql
     def header
       flags = 0
       flags |= HEADER_FLAG_COMPRESSION if compression and compressable?
-      Frame::Header.new(:opcode => opcode, :length => body.length, :flags => flags)
+      Frame::Header.new(:opcode => self.class::OPCODE, :length => body.length, :flags => flags)
     end
 
     def body
@@ -35,10 +36,6 @@ module CassandraCql
       header.bytes + body
     end
 
-    def opcode
-      self.class.opcode
-    end
-
     def compressable?
       self.class.compressable?
     end
@@ -53,10 +50,6 @@ module CassandraCql
     end
 
     module ClassMethods
-
-      def opcode
-        @opcode ||= CassandraCql.const_get("OPCODE_%s" % name.split("::").last.upcase)
-      end
 
       def compressable?
         true
