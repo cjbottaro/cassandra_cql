@@ -1,5 +1,5 @@
 module CassandraCql
-  module Frame
+  module Request
     class Query
       include Request
 
@@ -17,6 +17,10 @@ module CassandraCql
         end
       end
 
+      def set_notification_payload(payload)
+        payload[:query] = query
+        payload[:consistency] = consistency
+      end
     end
   end
 end

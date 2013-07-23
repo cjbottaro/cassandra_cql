@@ -81,4 +81,6 @@ module CassandraCql
   ERROR_ALREADY_EXISTS    = 0x2400
   ERROR_UNPREPARED        = 0x2500
 
+  COMPRESSION_SNAPPY      = "snappy"
+
 end

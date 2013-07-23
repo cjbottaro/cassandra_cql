@@ -1,4 +1,5 @@
 require "socket"
+require "cassandra_cql/notifications"
 
 module CassandraCql
   class Client
@@ -21,21 +22,21 @@ module CassandraCql
     end
 
     def supported
-      @supported ||= comm(Frame::Options)
+      @supported ||= comm(Request::Options)
     end
 
     def startup
       params = { "CQL_VERSION" => supported["CQL_VERSION"].first }
       params["COMPRESSION"] = options[:compression] if options[:compression]
-      comm(Frame::Startup, params)
+      comm(Request::Startup, params)
     end
 
     def query(query, consistency = :quorum)
-      comm(Frame::Query, query, Helper.consistency_code(consistency))
+      comm(Request::Query, query, Helper.consistency_code(consistency))
     end
 
     def prepare(query)
-      comm(Frame::Prepare, query)
+      comm(Request::Prepare, query)
     end
 
     def execute(statement, *args)
@@ -52,14 +53,26 @@ module CassandraCql
       else
         raise ArgumentError, "expected 0..2 arguments"
       end
-      comm(Frame::Execute, statement, binds, Helper.consistency_code(consistency))
+      comm(Request::Execute, statement, binds, Helper.consistency_code(consistency))
     end
 
   private
 
     def comm(klass, *args)
-      @last_request  = klass.new(*args).tap{ |request| socket.sendmsg(request.bytes) }
-      @last_response = Frame.recv(socket).tap{ |response| raise(Helper.frame_error_to_execption(response)) if response.error? }
+      Notifications.instrument("#{klass::EVENT_NAME}.cassandra_cql") do |payload|
+
+        # Handle the request phase
+        request = klass.new(*args)
+        request.set_notification_payload(payload)
+        request.compression = options[:compression]
+        socket.sendmsg(request.bytes)
+        @last_request  = request
+
+        # Handle the response phase
+        response = Frame.recv(socket)
+        raise(Helper.frame_error_to_execption(response)) if response.error?
+        @last_response = response
+      end
     end
 
     def check_and_load_compression_library
@@ -68,7 +81,7 @@ module CassandraCql
       raise ArgumentError, error_message unless compression_supported
 
       case options[:compression]
-      when "snappy"
+      when COMPRESSION_SNAPPY
         require "snappy"
       end
     end

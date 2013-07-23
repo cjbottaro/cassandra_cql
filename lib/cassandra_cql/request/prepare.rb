@@ -1,5 +1,5 @@
 module CassandraCql
-  module Frame
+  module Request
     class Prepare
       include Request
 
@@ -10,9 +10,13 @@ module CassandraCql
       end
 
       def buffer
-        Buffer.new.tap do |buffer|
+        Frame::Buffer.new.tap do |buffer|
           buffer.write_cql_long_string(query)
         end
+      end
+
+      def set_notification_payload(payload)
+        payload[:query] = query
       end
 
     end

@@ -1,13 +1,8 @@
 require "cassandra_cql/frame/buffer"
 require "cassandra_cql/frame/header"
 require "cassandra_cql/frame/error"
-require "cassandra_cql/frame/startup"
-require "cassandra_cql/frame/options"
 require "cassandra_cql/frame/supported"
 require "cassandra_cql/frame/ready"
-require "cassandra_cql/frame/query"
-require "cassandra_cql/frame/prepare"
-require "cassandra_cql/frame/execute"
 require "cassandra_cql/frame/result"
 
 module CassandraCql

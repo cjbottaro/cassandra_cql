@@ -11,7 +11,7 @@ module CassandraCql
       it "sends a startup frame and receives a ready frame" do
         client = nil
         expect{ client = described_class.new }.to_not raise_error
-        client.last_request.should be_kind_of(Frame::Startup)
+        client.last_request.should be_kind_of(Request::Startup)
         client.last_response.should be_an_instance_of(Frame::Ready)
       end
 

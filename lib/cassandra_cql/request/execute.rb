@@ -1,5 +1,5 @@
 module CassandraCql
-  module Frame
+  module Request
     class Execute
       include Request
 
@@ -12,7 +12,7 @@ module CassandraCql
       end
 
       def buffer
-        Buffer.new.tap do |buffer|
+        Frame::Buffer.new.tap do |buffer|
           buffer.write_cql_short_bytes(statement.id)
           buffer.write_cql_short(binds.length)
           binds.each_with_index do |bind, i|
@@ -23,6 +23,12 @@ module CassandraCql
           end
           buffer.write_cql_consistency(consistency)
         end
+      end
+
+      def set_notification_payload(payload)
+        payload[:query_id] = statement.id
+        payload[:binds] = binds
+        payload[:consistency] = consistency
       end
 
     end
