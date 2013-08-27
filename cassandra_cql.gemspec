@@ -8,8 +8,8 @@ Gem::Specification.new do |gem|
   gem.version       = CassandraCql::VERSION
   gem.authors       = ["Christopher J. Bottaro"]
   gem.email         = ["cjbottaro@alumni.cs.utexas.edu"]
-  gem.description   = %q{TODO: Write a gem description}
-  gem.summary       = %q{TODO: Write a gem summary}
+  gem.description   = %q{Synchronous CQL binary protocol client for Cassandra}
+  gem.summary       = %q{Synchronous CQL binary protocol client for Cassandra}
   gem.homepage      = ""
 
   gem.files         = `git ls-files`.split($/)
@@ -25,4 +25,5 @@ Gem::Specification.new do |gem|
   gem.add_development_dependency("cql-rb")
   gem.add_development_dependency("cassandra-cql")
   gem.add_development_dependency("snappy")
+  gem.add_development_dependency("rr")
 end

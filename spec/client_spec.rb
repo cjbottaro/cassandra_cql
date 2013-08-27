@@ -6,6 +6,19 @@ module CassandraCql
 
     let(:client){ described_class.new.tap{ |client| client.query("USE cassandra_cql_test") } }
 
+    context "#comm" do
+
+      it "reconnects if there is an error" do
+        connection = client.connection
+        mock(client).comm_without_reconnect(anything, anything, anything){ raise(Errno::EPIPE) }
+        stub.proxy(client).comm_without_reconnect
+        mock.proxy(client).reset_connection
+        client.query("SELECT * FROM test")
+        client.connection.should_not == connection
+      end
+
+    end
+
     context "#new" do
 
       it "sends a startup frame and receives a ready frame" do
@@ -20,7 +33,7 @@ module CassandraCql
     context "#supported" do
 
       it "gets the server supported options" do
-        response = client.supported
+        response = client.instance_eval{ comm(Request::Options) }
         response.should be_instance_of(Frame::Supported)
         response.options["CQL_VERSION"].should_not be_empty
         response.options["COMPRESSION"].should_not be_empty

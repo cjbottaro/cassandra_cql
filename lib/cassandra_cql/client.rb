@@ -1,10 +1,10 @@
-require "socket"
+require "cassandra_cql/connection"
 require "cassandra_cql/notifications"
 
 module CassandraCql
   class Client
 
-    attr_reader :host, :port, :options, :socket, :last_request, :last_response
+    attr_reader :host, :port, :options, :connection, :supported, :last_request, :last_response
 
     def initialize(options = {})
       @options = { :host => "localhost", :port => 9042 }.merge(options)
@@ -12,17 +12,24 @@ module CassandraCql
 
       @host = @options.delete(:host)
       @port = @options.delete(:port)
-      @socket = TCPSocket.new(host, port)
       @last_request = nil
       @last_response = nil
 
-      check_and_load_compression_library if @options[:compression]
-
-      startup
+      reset_connection
     end
 
-    def supported
-      @supported ||= comm(Request::Options)
+    def reset_connection
+      @connection.close if @connection
+      @connection = Connection.new(host, port, options[:timeout])
+
+      get_supported
+      check_and_load_compression_library
+      startup
+      query("USE #{@keyspace}") if @keyspace
+    end
+
+    def get_supported
+      @supported = comm(Request::Options).options
     end
 
     def startup
@@ -65,18 +72,40 @@ module CassandraCql
         @last_request = request = klass.new(*args)
         request.set_notification_payload(payload)
         request.compression = options[:compression]
-        socket.sendmsg(request.bytes)
+        connection.write(request.bytes)
 
         # Handle the response phase
-        @last_response = response = Frame.recv(socket)
+        @last_response = response = Frame.recv(connection)
         raise(response.to_exception) if response.error?
+
+        # If they set the keyspace, record that so we can set it on reconnect
+        @keyspace = response.name if response.instance_of?(Frame::Result::SetKeyspace)
 
         # Return response
         response
       end
     end
 
+    def comm_with_reconnect(*args)
+      reconnected = false
+      begin
+        comm_without_reconnect(*args)
+      rescue Errno::EPIPE => e
+        if reconnected
+          raise
+        else
+          reset_connection
+          reconnected = true
+          retry
+        end
+      end
+    end
+
+    alias_method :comm_without_reconnect, :comm
+    alias_method :comm, :comm_with_reconnect
+
     def check_and_load_compression_library
+      return unless options[:compression]
       compression_supported = supported["COMPRESSION"].include?(options[:compression])
       error_message = "unsupported compression: #{options[:compression]}"
       raise ArgumentError, error_message unless compression_supported

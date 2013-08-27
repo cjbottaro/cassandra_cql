@@ -1,5 +1,6 @@
 require "cassandra_cql"
 require "pry"
+require "rr"
 
 RSpec.configure do |config|
   config.filter_run :focus => true

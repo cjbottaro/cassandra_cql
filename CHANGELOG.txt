@@ -1,0 +1,8 @@
+0.0.2
+
+	* Added CassandraCql::Client#reset_connection
+	* Attempt to reset connection on socket error (like after forking)
+
+0.0.1
+
+	* Initial release
