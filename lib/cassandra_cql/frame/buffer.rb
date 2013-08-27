@@ -5,7 +5,7 @@ module CassandraCql
       attr_reader :bytes, :pos
 
       def initialize(bytes = "")
-        @bytes = bytes
+        @bytes = bytes.force_encoding("ASCII-8BIT")
         @pos = 0
       end
 
@@ -91,21 +91,23 @@ module CassandraCql
       end
 
       def write_cql_string(string)
+        string = string.dup.force_encoding(Encoding::BINARY)
         write_cql_short(string.length)
         @bytes += string
       end
 
       def write_cql_long_string(string)
+        string = string.dup.force_encoding(Encoding::BINARY)
         write_cql_int(string.length)
         @bytes += string
       end
 
       def write_cql_short_bytes(bytes)
-        write_cql_string(bytes.to_s.dup.force_encoding(Encoding::BINARY))
+        write_cql_string(bytes)
       end
 
       def write_cql_bytes(bytes)
-        write_cql_long_string(bytes.to_s.dup.force_encoding(Encoding::BINARY))
+        write_cql_long_string(bytes)
       end
 
       def write_cql_consistency(consistency)
