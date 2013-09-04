@@ -10,7 +10,7 @@ module CassandraCql
 
       it "reconnects if there is an error" do
         connection = client.connection
-        mock(client).comm_without_reconnect(anything, anything, anything){ raise(Errno::EPIPE) }
+        mock(client).comm_without_reconnect(anything, anything, anything){ raise(Connection::ClosedError) }
         stub.proxy(client).comm_without_reconnect
         mock.proxy(client).reset_connection
         client.query("SELECT * FROM test")

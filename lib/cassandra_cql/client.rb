@@ -90,7 +90,7 @@ module CassandraCql
       reconnected = false
       begin
         comm_without_reconnect(*args)
-      rescue Errno::EPIPE => e
+      rescue Connection::ClosedError => e
         if reconnected
           raise
         else

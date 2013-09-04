@@ -3,6 +3,8 @@ require "socket"
 module CassandraCql
   class Connection
 
+    class ClosedError < StandardError; end
+
     attr_reader :socket, :timeout
 
     def initialize(host, port, timeout)
@@ -20,18 +22,22 @@ module CassandraCql
     end
 
     def read_without_timeout(length)
-      socket.read(length)
+      socket.read(length).tap do |data|
+        raise(ClosedError, "connection closed") if data.nil?
+      end
     end
 
     def write_without_timeout(bytes)
       socket.sendmsg(bytes)
+    rescue Errno::EPIPE => e
+      raise(ClosedError, "connection closed")
     end
 
     def read_with_timeout(length)
       if length == 0
         nil
       elsif IO.select([socket], nil, nil, timeout)
-        socket.recv(length)
+        read_without_timeout(length)
       else
         raise Errno::ETIMEDOUT
       end
@@ -41,7 +47,7 @@ module CassandraCql
       if bytes.empty?
         0
       elsif IO.select(nil, [socket], nil, timeout)
-        socket.sendmsg(bytes)
+        write_without_timeout(bytes)
       else
         raise Errno::ETIMEDOUT, "write timeout"
       end
