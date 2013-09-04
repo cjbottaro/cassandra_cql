@@ -11,21 +11,17 @@ task "db:test:prepare" do
   client = Cql::Client.connect(:host => 'localhost')
 
   begin
-    client.execute <<-CQL
-      CREATE KEYSPACE cassandra_cql_test
-                 WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
-    CQL
+    client.execute("DROP KEYSPACE cassandra_cql_test")
   rescue Cql::QueryError => e
     nil
   end
+
+  client.execute <<-CQL
+    CREATE KEYSPACE cassandra_cql_test
+               WITH replication = {'class': 'SimpleStrategy', 'replication_factor' : 1};
+  CQL
 
   client.use("cassandra_cql_test")
-
-  begin
-    client.execute("DROP TABLE test")
-  rescue Cql::QueryError => e
-    nil
-  end
 
   client.execute <<-CQL
     CREATE TABLE test (
