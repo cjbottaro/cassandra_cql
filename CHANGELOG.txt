@@ -1,3 +1,7 @@
+0.0.4
+
+	* Better detection of closed connections
+
 0.0.3
 
   * Fix handling of multi-byte UTF-8 characters
