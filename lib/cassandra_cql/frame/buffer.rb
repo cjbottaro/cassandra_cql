@@ -114,6 +114,14 @@ module CassandraCql
         write_cql_short(consistency)
       end
 
+      def write_cql_string_list(*string_list)
+        string_list = string_list.flatten
+        write_cql_short(string_list.length)
+        string_list.each do |string|
+          write_cql_string(string)
+        end
+      end
+
       def write_cql_string_map(hash)
         write_cql_short(hash.length)
         hash.each do |k, v|
