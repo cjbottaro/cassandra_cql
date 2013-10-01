@@ -1,3 +1,7 @@
+0.0.5
+
+	* Fix Client#new with timeout option
+
 0.0.4
 
 	* Better detection of closed connections

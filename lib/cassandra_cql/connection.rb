@@ -35,7 +35,7 @@ module CassandraCql
 
     def read_with_timeout(length)
       if length == 0
-        nil
+        ""
       elsif IO.select([socket], nil, nil, timeout)
         read_without_timeout(length)
       else
