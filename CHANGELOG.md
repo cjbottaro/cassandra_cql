@@ -2,40 +2,40 @@
 
 Breaking
 
-	- CassandraCql::Error::Base is now CassandraCql::Error and inherits off of StandardError
+  - CassandraCql::Error::Base is now CassandraCql::Error and inherits off of StandardError
 
 Features
 
-	- Stress tool (tools/stress.rb)
+  - Stress tool (tools/stress.rb)
 
 Bugfixes
 
-	- JRuby has different Socket#send and Socket#recv semantics
-	- Client#new with timeout option
+  - JRuby has different Socket#send and Socket#recv semantics
+  - Client#new with timeout option
 
 ## 0.0.4
 
 Breaking
 
-	- None
+  - None
 
 Features
 
-	- Better detection of closed connections
+  - Better detection of closed connections
 
 Bugfixes
 
-	- None
+  - None
 
 ## 0.0.3
 
 Breaking
 
-	- None
+  - None
 
 Features
 
-	- None
+  - None
 
 Bugfixes
 
@@ -45,27 +45,27 @@ Bugfixes
 
 Breaking
 
-	- None
+  - None
 
 Features
 
-	- CassandraCql::Client#reset_connection
-	- Attempt to reset connection on socket error (like after forking)
+  - CassandraCql::Client#reset_connection
+  - Attempt to reset connection on socket error (like after forking)
 
 Bugfixes
 
-	- None
+  - None
 
 ## 0.0.1
 
 Breaking
 
-	- None
+  - None
 
 Features
 
-	- Initial release
+  - Initial release
 
 Bugfixes
 
-	- None
+  - None
