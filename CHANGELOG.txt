@@ -1,5 +1,7 @@
 0.0.5
 
+	* Added stress tool
+	* Fix for JRuby (different send/recv semantics)
 	* Fix Client#new with timeout option
 
 0.0.4

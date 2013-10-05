@@ -22,13 +22,14 @@ module CassandraCql
     end
 
     def read_without_timeout(length)
-      socket.read(length).tap do |data|
-        raise(ClosedError, "connection closed") if data.nil?
+      return "" if length == 0
+      socket.recv(length).tap do |data|
+        raise(ClosedError, "connection closed") if data == ""
       end
     end
 
     def write_without_timeout(bytes)
-      socket.sendmsg(bytes)
+      socket.send(bytes, 0)
     rescue Errno::EPIPE => e
       raise(ClosedError, "connection closed")
     end
