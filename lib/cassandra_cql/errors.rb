@@ -1,33 +1,28 @@
 module CassandraCql
-  module Error
+  class Error < StandardError
 
-    class Base < RuntimeError
+    attr_reader :code
 
-      attr_reader :code
-
-      def initialize(code, message)
-        super(message)
-        @code = code
-      end
-
+    def initialize(code, message)
+      super(message)
+      @code = code
     end
 
-    class Server < Base; end
-    class Protocol < Base; end
-    class BadCredentials < Base; end
-    class Unavailable < Base; end
-    class Overloaded < Base; end
-    class IsBootstrapping < Base; end
-    class Truncate < Base; end
-    class WriteTimeout < Base; end
-    class ReadTimeout < Base; end
-    class Syntax < Base; end
-    class Unauthorized < Base; end
-    class Invalid < Base; end
-    class Config < Base; end
-    class AlreadyExists < Base; end
-    class Unprepared < Base; end
-
+    class Server < self; end
+    class Protocol < self; end
+    class BadCredentials < self; end
+    class Unavailable < self; end
+    class Overloaded < self; end
+    class IsBootstrapping < self; end
+    class Truncate < self; end
+    class WriteTimeout < self; end
+    class ReadTimeout < self; end
+    class Syntax < self; end
+    class Unauthorized < self; end
+    class Invalid < self; end
+    class Config < self; end
+    class AlreadyExists < self; end
+    class Unprepared < self; end
 
     MAP = begin
       CassandraCql.constants.inject({}) do |memo, name|

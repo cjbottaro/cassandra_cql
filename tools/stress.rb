@@ -44,7 +44,7 @@ parser = OptionParser.new do |op|
     options.port = v
   end
 
-  op.on("-r", "--replication-factor", "Replication factor for creating tables (default 1)", Integer) do |v|
+  op.on("-r", "--replication-factor=N", "Replication factor for creating tables (default 1)", Integer) do |v|
     options.replication_factor = v
   end
 
@@ -162,8 +162,7 @@ class Stressor
            WHERE id = #{id}
              AND version = #{version}
         CQL
-      rescue StandardError => e
-        raise
+      rescue CassandraCql::Error, Cql::QueryError => e
         self.errors += 1
         @connection = nil
       end
